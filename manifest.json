@@ -1,0 +1,33 @@
+{
+  "background_color": "#1d3a5c",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "Stay Atlas",
+  "orientation": "any",
+  "scope": "/stay-atlas-app/",
+  "short_name": "Stay Atlas",
+  "start_url": "/stay-atlas-app/",
+  "theme_color": "#1d3a5c",
+  "id": "stay-atlas",
+  "description": "Compare trusted booking platforms by region and specialty, then book directly.",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
