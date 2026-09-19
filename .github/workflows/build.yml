@@ -38,13 +38,21 @@ jobs:
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > keystore.jks
 
+      - name: Verify keystore
+        working-directory: androidApp
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        run: |
+          keytool -list -keystore keystore.jks -storepass "$KEYSTORE_PASSWORD" -alias "$KEY_ALIAS"
+
       - name: Build release AAB
         working-directory: androidApp
         env:
           KEYSTORE_PATH: ${{ github.workspace }}/androidApp/keystore.jks
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         run: gradle bundleRelease --no-daemon
 
       - name: Upload AAB artifact
