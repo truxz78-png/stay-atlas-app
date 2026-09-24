@@ -20,6 +20,7 @@
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
   body{
     background:var(--paper);
     color:var(--ink);
@@ -59,7 +60,28 @@
     color:#D8D2C0;
   }
 
-  section{padding:40px 20px;}
+  nav.jump{
+    background:var(--paper);
+    border-bottom:1px solid #D3CCB6;
+    position:sticky;
+    top:0;
+    z-index:10;
+  }
+  nav.jump .wrap{
+    display:flex;
+    gap:18px;
+    overflow-x:auto;
+    white-space:nowrap;
+    padding-top:12px;
+    padding-bottom:12px;
+  }
+  nav.jump a{
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--forest);
+  }
+
+  section{padding:40px 20px;scroll-margin-top:48px;}
   section.alt{background:var(--paper-dim);}
 
   .section-title{
@@ -108,6 +130,10 @@
     align-self:flex-start;
     padding-bottom:1px;
   }
+  .ext-note{
+    font-size:12px;
+    color:#8A8272;
+  }
 
   .guide-card{
     background:var(--forest);
@@ -137,6 +163,11 @@
     color:var(--forest-deep);
     background:var(--brass);
     padding:9px 16px;
+    align-self:flex-start;
+  }
+  .guide-card .ext-note{
+    color:#B9C4CF;
+    margin-top:8px;
   }
 
   .destination-grid{
@@ -186,6 +217,9 @@
     border-bottom:1px dashed var(--brass);
     padding-bottom:1px;
   }
+  .guide-card .more .when-open{display:none;}
+  .guide-card .more[open] .when-open{display:inline;}
+  .guide-card .more[open] .when-closed{display:none;}
   .guide-card .more p{
     margin-top:10px;
     margin-bottom:0;
@@ -222,13 +256,6 @@
     color:var(--forest);
     border-bottom:1px solid var(--forest);
   }
-  .insure-card.soon{
-    opacity:0.55;
-  }
-  .insure-card.soon .go{
-    color:#8A8272;
-    border-bottom:1px dashed #8A8272;
-  }
 
   .embassy-box{
     background:var(--paper);
@@ -258,6 +285,7 @@
     font-size:12.5px;
     color:#8A8272;
   }
+  footer p{margin:0 auto 6px;max-width:52ch;}
 </style>
 </head>
 <body>
@@ -270,75 +298,93 @@
   </div>
 </header>
 
-<section>
+<nav class="jump" aria-label="Sections">
+  <div class="wrap">
+    <a href="#book">Where to book</a>
+    <a href="#destinations">Destinations</a>
+    <a href="#insurance">Insurance</a>
+    <a href="#before-you-fly">Before you fly</a>
+  </div>
+</nav>
+
+<section id="book">
   <div class="wrap">
     <div class="section-title">Choose where to book</div>
-    <div class="section-sub">Every platform below covers worldwide destinations. Pick the one you know and trust.</div>
+    <div class="section-sub">Every platform below covers worldwide destinations. Pick the one you know and trust. Each button opens the partner's own website ↗</div>
 
     <div class="platform-grid">
 
       <div class="platform-card">
         <div class="name">Booking.com</div>
         <div class="desc">The world's most recognized name in hotel booking, with the widest global inventory.</div>
-        <a class="go" href="https://booking.stay22.com/wayfarer/kQplpJhK-1" target="_blank" rel="noopener">Book on Booking.com →</a>
+        <a class="go" href="https://booking.stay22.com/wayfarer/kQplpJhK-1" target="_blank" rel="noopener">Book on Booking.com ↗</a>
+        <div class="ext-note">Opens partner site</div>
       </div>
 
       <div class="platform-card">
         <div class="name">Agoda</div>
         <div class="desc">Strong deals across Asia and the Pacific, with worldwide coverage too.</div>
-        <a class="go" href="https://agoda.stay22.com/wayfarer/rU_pxuKsPo" target="_blank" rel="noopener">Book on Agoda →</a>
+        <a class="go" href="https://agoda.stay22.com/wayfarer/rU_pxuKsPo" target="_blank" rel="noopener">Book on Agoda ↗</a>
+        <div class="ext-note">Opens partner site</div>
       </div>
 
       <div class="platform-card">
         <div class="name">Expedia</div>
         <div class="desc">Hotels, flights, cars and tours bundled into one worldwide booking engine.</div>
-        <a class="go" href="https://expedia.stay22.com/wayfarer/n6QDECneiL" target="_blank" rel="noopener">Book on Expedia →</a>
+        <a class="go" href="https://expedia.stay22.com/wayfarer/n6QDECneiL" target="_blank" rel="noopener">Book on Expedia ↗</a>
+        <div class="ext-note">Opens partner site</div>
       </div>
 
       <div class="platform-card">
         <div class="name">Hotels.com</div>
         <div class="desc">A no-fuss global hotel search with a loyalty stamp on every stay.</div>
-        <a class="go" href="https://hotelscom.stay22.com/wayfarer/dlbbfoLKf6" target="_blank" rel="noopener">Book on Hotels.com →</a>
+        <a class="go" href="https://hotelscom.stay22.com/wayfarer/dlbbfoLKf6" target="_blank" rel="noopener">Book on Hotels.com ↗</a>
+        <div class="ext-note">Opens partner site</div>
       </div>
 
       <div class="platform-card">
         <div class="name">Vrbo</div>
         <div class="desc">Whole homes, villas and even castles — for stays with more room to spread out.</div>
-        <a class="go" href="https://vrbo.stay22.com/wayfarer/vHSZdp3Sl4" target="_blank" rel="noopener">Book on Vrbo →</a>
+        <a class="go" href="https://vrbo.stay22.com/wayfarer/vHSZdp3Sl4" target="_blank" rel="noopener">Book on Vrbo ↗</a>
+        <div class="ext-note">Opens partner site</div>
       </div>
 
       <div class="platform-card">
         <div class="name">Trip.com</div>
         <div class="desc">A one-stop shop with particular strength across China and the rest of Asia.</div>
-        <a class="go" href="https://www.trip.com/hotels/list?city=228&display=Tokyo&optionId=228&optionType=City&optionName=Tokyo&Allianceid=10461669&SID=330483714&trip_sub1=&trip_sub3=D19710931" target="_blank" rel="noopener">Book on Trip.com →</a>
+        <a class="go" href="https://www.trip.com/hotels/?Allianceid=10461669&SID=330483714&trip_sub3=D19710931" target="_blank" rel="noopener">Book on Trip.com ↗</a>
+        <div class="ext-note">Opens partner site</div>
       </div>
 
       <div class="platform-card">
         <div class="name">intui.travel</div>
-        <div class="desc">A worldwide aggregator bundling hotels, flights and transfers in one search.</div>
-        <a class="go" href="https://intui.tpx.lu/RKEJ92FM" target="_blank" rel="noopener">Book on intui.travel →</a>
+        <div class="desc">Airport and city transfers worldwide, run by local professional companies — to your hotel, villa or any address.</div>
+        <a class="go" href="https://intui.tpx.lu/RKEJ92FM" target="_blank" rel="noopener">Book a transfer on intui.travel ↗</a>
+        <div class="ext-note">Opens partner site</div>
       </div>
 
       <div class="platform-card">
         <div class="name">Kayak</div>
         <div class="desc">A powerful search engine that compares prices across hundreds of travel sites at once.</div>
-        <a class="go" href="https://kayak.stay22.com/wayfarer/s5Cz6anulC" target="_blank" rel="noopener">Book on Kayak →</a>
+        <a class="go" href="https://kayak.stay22.com/wayfarer/s5Cz6anulC" target="_blank" rel="noopener">Book on Kayak ↗</a>
+        <div class="ext-note">Opens partner site</div>
       </div>
 
       <div class="platform-card">
         <div class="name">GetYourGuide</div>
         <div class="desc">Tours, activities and skip-the-line tickets to make the most of every destination.</div>
-        <a class="go" href="https://getyourguide.stay22.com/wayfarer/wjrJCWV9kX" target="_blank" rel="noopener">Book on GetYourGuide →</a>
+        <a class="go" href="https://getyourguide.stay22.com/wayfarer/wjrJCWV9kX" target="_blank" rel="noopener">Book on GetYourGuide ↗</a>
+        <div class="ext-note">Opens partner site</div>
       </div>
 
     </div>
   </div>
 </section>
 
-<section class="alt">
+<section class="alt" id="destinations">
   <div class="wrap">
     <div class="section-title">Destination guide</div>
-    <div class="section-sub">A closer look at one of our favorite cities to help you plan.</div>
+    <div class="section-sub">A closer look at two of our favorite destinations to help you plan.</div>
 
     <div class="destination-grid">
 
@@ -347,10 +393,11 @@
         <h3>Antalya: where to stay</h3>
         <p>Turkey's Mediterranean coast is a longtime favorite with Russian and European travelers alike, prized for its all-inclusive resorts and beach clubs.</p>
         <details class="more">
-          <summary><span>Read more</span></summary>
+          <summary><span class="when-closed">Read more</span><span class="when-open">Read less</span></summary>
           <p>Konyaaltı and Lara Beach anchor the big resort strip, with pools, spas and private beach access built into most stays; the Old Town (Kaleiçi) offers a quieter, boutique alternative inside a restored harbor quarter. Peak season runs June through September, so book resort-front rooms early if you want direct beach access.</p>
         </details>
-        <a class="go" href="https://kayak.stay22.com/wayfarer/HS--K9zTjr" target="_blank" rel="noopener">See Antalya hotels →</a>
+        <a class="go" href="https://www.trip.com/hotels/list?city=1217&display=Antalya&optionId=1217&optionType=City&optionName=Antalya&Allianceid=10461669&SID=330483714&trip_sub3=D19710931" target="_blank" rel="noopener">See Antalya hotels ↗</a>
+        <div class="ext-note">Opens Trip.com</div>
       </div>
 
       <div class="guide-card">
@@ -358,17 +405,18 @@
         <h3>Tokyo: where to stay</h3>
         <p>Tokyo rewards travelers who pick a base close to a train line. Shinjuku puts you near nightlife and the fastest transit connections; Asakusa trades some convenience for a quieter, more traditional feel near the city's oldest temple.</p>
         <details class="more">
-          <summary><span>Read more</span></summary>
+          <summary><span class="when-closed">Read more</span><span class="when-open">Read less</span></summary>
           <p>Wherever you land, book early — central Tokyo hotels fill up fast during cherry blossom season and the autumn foliage weeks. Shibuya and Shinjuku suit first-time visitors who want nightlife and easy transit; Asakusa and Ueno reward travelers chasing a slower, more traditional pace.</p>
         </details>
-        <a class="go" href="https://www.trip.com/hotels/list?city=228&display=Tokyo&optionId=228&optionType=City&optionName=Tokyo&Allianceid=10461669&SID=330483714&trip_sub1=&trip_sub3=D19710931" target="_blank" rel="noopener">See Tokyo hotels →</a>
+        <a class="go" href="https://www.trip.com/hotels/list?city=228&display=Tokyo&optionId=228&optionType=City&optionName=Tokyo&Allianceid=10461669&SID=330483714&trip_sub1=&trip_sub3=D19710931" target="_blank" rel="noopener">See Tokyo hotels ↗</a>
+        <div class="ext-note">Opens Trip.com</div>
       </div>
 
     </div>
   </div>
 </section>
 
-<section>
+<section id="insurance">
   <div class="wrap">
     <div class="section-title">Travel insurance</div>
     <div class="section-sub">Cover the trip before you cover the hotel.</div>
@@ -378,26 +426,29 @@
       <div class="insure-card">
         <div class="name">SafetyWing</div>
         <div class="desc">Flexible worldwide travel medical coverage, built for people on the move.</div>
-        <a class="go" href="https://safetywing.com/nomad-insurance?referenceID=26592172&utm_source=26592172&utm_medium=Ambassador" target="_blank" rel="noopener">Get covered →</a>
+        <a class="go" href="https://safetywing.com/nomad-insurance?referenceID=26592172&utm_source=26592172&utm_medium=Ambassador" target="_blank" rel="noopener">Get covered ↗</a>
+        <div class="ext-note">Opens partner site</div>
       </div>
 
     </div>
   </div>
 </section>
 
-<section class="alt">
+<section class="alt" id="before-you-fly">
   <div class="wrap">
     <div class="section-title">Before you fly</div>
     <div class="embassy-box">
       <div class="name">Find your embassy</div>
       <p>Look up your country's embassy or consulate at your destination — useful to have on hand before any international trip.</p>
-      <a class="go" href="https://www.embassypages.com/" target="_blank" rel="noopener">Search embassies →</a>
+      <a class="go" href="https://www.embassypages.com/" target="_blank" rel="noopener">Search embassies ↗</a>
+      <div class="ext-note">Opens external site</div>
     </div>
   </div>
 </section>
 
 <footer>
-  Stay Atlas · Prices and availability are set by each booking platform.
+  <p>Stay Atlas · Booking buttons open each partner's own website, where you complete your booking.</p>
+  <p>Prices and availability are set by each booking platform. Stay Atlas may earn a commission from bookings made through these links, at no extra cost to you.</p>
 </footer>
 
 <script>
