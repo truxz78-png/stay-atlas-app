@@ -501,6 +501,7 @@
       sections.forEach(function(s,i){
         if(s && s.offsetTop <= y){ idx = i; }
       });
+      if(window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4){ idx = sections.length - 1; }
       if(idx === current){ return; }
       current = idx;
       links.forEach(function(a,i){
