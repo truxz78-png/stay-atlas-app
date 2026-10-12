@@ -521,9 +521,21 @@
     update();
   })();
 </script>
-
 <script type="text/javascript">
 (function() {
+  var SKIP_WORDS = ['stay atlas', 'booking.com', 'agoda', 'expedia', 'hotels.com', 'vrbo', 'trip.com', 'kayak', 'intui.travel', 'getyourguide', 'safetywing'];
+  function isSkippable(text) {
+    var clean = text.trim().toLowerCase();
+    return SKIP_WORDS.indexOf(clean) !== -1;
+  }
+  function fixCase(original, translated) {
+    if (!translated) return translated;
+    var firstChar = original.trim().charAt(0);
+    if (firstChar && firstChar === firstChar.toUpperCase() && firstChar !== firstChar.toLowerCase()) {
+      return translated.charAt(0).toUpperCase() + translated.slice(1);
+    }
+    return translated;
+  }
   function getBrowserLang() {
     var lang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
     return lang.split('-')[0];
@@ -553,8 +565,9 @@
     var nodes = getTextNodes(document.body);
     nodes.forEach(function(node) {
       var original = node.nodeValue;
+      if (isSkippable(original)) return;
       translateText(original, lang).then(function(translated) {
-        if (translated) node.nodeValue = translated;
+        if (translated) node.nodeValue = fixCase(original, translated);
       }).catch(function(){});
     });
   }
