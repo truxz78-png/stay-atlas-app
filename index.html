@@ -522,44 +522,49 @@
   })();
 </script>
 
-<div id="google_translate_element" style="position:absolute;top:-9999px;left:-9999px;"></div>
 <script type="text/javascript">
-function googleTranslateElementInit() {
-  new google.translate.TranslateElement({pageLanguage: 'en', autoDisplay: false}, 'google_translate_element');
-}
-function getBrowserLang() {
-  var lang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
-  return lang.split('-')[0];
-}
-function triggerTranslation(lang) {
-  if (lang === 'en') return;
-  var tries = 0;
-  var interval = setInterval(function() {
-    var combo = document.querySelector('select.goog-te-combo');
-    if (combo) {
-      clearInterval(interval);
-      combo.value = lang;
-      combo.dispatchEvent(new Event('change'));
-    } else if (++tries > 30) {
-      clearInterval(interval);
-    }
-  }, 300);
-}
-window.addEventListener('load', function() {
-  var saved = null;
-  try { saved = localStorage.getItem('stayatlas_lang'); } catch(e) {}
-  var targetLang = saved || getBrowserLang();
-  setTimeout(function() { triggerTranslation(targetLang); }, 800);
-});
+(function() {
+  function getBrowserLang() {
+    var lang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+    return lang.split('-')[0];
+  }
+  function getTextNodes(root) {
+    var nodes = [];
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode: function(node) {
+        if (!node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+        var tag = node.parentNode.nodeName;
+        if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'NOSCRIPT') return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    var n;
+    while (n = walker.nextNode()) nodes.push(n);
+    return nodes;
+  }
+  function translateText(text, lang) {
+    var url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=' + lang + '&dt=t&q=' + encodeURIComponent(text);
+    return fetch(url).then(function(r){ return r.json(); }).then(function(data){
+      return data[0].map(function(seg){ return seg[0]; }).join('');
+    });
+  }
+  function translatePage(lang) {
+    if (lang === 'en') return;
+    var nodes = getTextNodes(document.body);
+    nodes.forEach(function(node) {
+      var original = node.nodeValue;
+      translateText(original, lang).then(function(translated) {
+        if (translated) node.nodeValue = translated;
+      }).catch(function(){});
+    });
+  }
+  window.addEventListener('load', function() {
+    var saved = null;
+    try { saved = localStorage.getItem('stayatlas_lang'); } catch(e) {}
+    var lang = saved || getBrowserLang();
+    setTimeout(function(){ translatePage(lang); }, 300);
+  });
+})();
 </script>
-<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-<style>
-.goog-te-banner-frame { display: none !important; visibility: hidden !important; }
-body { top: 0px !important; position: static !important; }
-html { top: 0px !important; }
-.goog-tooltip, .goog-tooltip:hover { display: none !important; }
-.goog-text-highlight { background: none !important; box-shadow: none !important; }
-#goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
-</style>
 </body>
 </html>
