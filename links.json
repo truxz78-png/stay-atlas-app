@@ -1,0 +1,103 @@
+{
+  "settings": {
+    "auto_switch": false
+  },
+  "links": {
+    "agoda": {
+      "name": "Agoda",
+      "principal": "https://agoda.stay22.com/wayfarer/rU_pxuKsPo",
+      "respaldo": null,
+      "pagina_oficial": "https://www.agoda.com/",
+      "active": "principal",
+      "consecutive_failures": 0
+    },
+    "booking": {
+      "name": "Booking.com",
+      "principal": "https://booking.stay22.com/wayfarer/kQplpJhK-1",
+      "respaldo": null,
+      "pagina_oficial": "https://www.booking.com/",
+      "active": "principal",
+      "consecutive_failures": 0
+    },
+    "expedia": {
+      "name": "Expedia",
+      "principal": "https://expedia.stay22.com/wayfarer/n6QDECneiL",
+      "respaldo": null,
+      "pagina_oficial": "https://www.expedia.com/",
+      "active": "principal",
+      "consecutive_failures": 0
+    },
+    "getyourguide": {
+      "name": "GetYourGuide",
+      "principal": "https://getyourguide.stay22.com/wayfarer/wjrJCWV9kX",
+      "respaldo": null,
+      "pagina_oficial": "https://www.getyourguide.com/",
+      "active": "principal",
+      "consecutive_failures": 0
+    },
+    "hotelscom": {
+      "name": "Hotels.com",
+      "principal": "https://hotelscom.stay22.com/wayfarer/dlbbfoLKf6",
+      "respaldo": null,
+      "pagina_oficial": "https://www.hotels.com/",
+      "active": "principal",
+      "consecutive_failures": 0
+    },
+    "intuitravel": {
+      "name": "intui.travel",
+      "principal": "https://intui.tpx.lu/RKEJ92FM",
+      "respaldo": null,
+      "pagina_oficial": "https://intui.travel/",
+      "active": "principal",
+      "consecutive_failures": 0
+    },
+    "kayak": {
+      "name": "Kayak",
+      "principal": "https://kayak.stay22.com/wayfarer/s5Cz6anulC",
+      "respaldo": null,
+      "pagina_oficial": "https://www.kayak.com/",
+      "active": "principal",
+      "consecutive_failures": 0
+    },
+    "safetywing": {
+      "name": "SafetyWing",
+      "principal": "https://safetywing.com/nomad-insurance?referenceID=26592172&utm_source=26592172&utm_medium=Ambassador",
+      "respaldo": null,
+      "pagina_oficial": "https://safetywing.com/",
+      "active": "principal",
+      "consecutive_failures": 0
+    },
+    "vrbo": {
+      "name": "Vrbo",
+      "principal": "https://vrbo.stay22.com/wayfarer/vHSZdp3Sl4",
+      "respaldo": null,
+      "pagina_oficial": "https://www.vrbo.com/",
+      "active": "principal",
+      "consecutive_failures": 0
+    },
+    "tripcom_general": {
+      "name": "Trip.com",
+      "principal": "https://www.trip.com/hotels/?Allianceid=10461669&SID=330483714&trip_sub3=D19710931",
+      "respaldo": null,
+      "pagina_oficial": "https://www.trip.com/",
+      "active": "principal",
+      "consecutive_failures": 0
+    },
+    "tripcom_antalya": {
+      "name": "Trip.com - Antalya",
+      "principal": "https://www.trip.com/hotels/list?city=1217&display=Antalya&optionId=1217&optionType=City&optionName=Antalya&Allianceid=10461669&SID=330483714&trip_sub3=D19710931",
+      "respaldo": null,
+      "pagina_oficial": "https://www.trip.com/",
+      "active": "principal",
+      "consecutive_failures": 0
+    },
+    "tripcom_tokyo": {
+      "name": "Trip.com - Tokyo",
+      "principal": "https://www.trip.com/hotels/list?city=228&display=Tokyo&optionId=228&optionType=City&optionName=Tokyo&Allianceid=10461669&SID=330483714&trip_sub1=&trip_sub3=D19710931",
+      "respaldo": null,
+      "pagina_oficial": "https://www.trip.com/",
+      "active": "principal",
+      "consecutive_failures": 0
+    }
+  }
+}

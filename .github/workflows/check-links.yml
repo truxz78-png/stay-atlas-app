@@ -1,0 +1,51 @@
+name: Check Partner Links
+
+on:
+  schedule:
+    - cron: '0 14 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run link check
+        id: check
+        run: python3 tools/check_links.py
+        continue-on-error: true
+
+      - name: Save any changes to links.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet links.json; then
+            git add links.json
+            git commit -m "Actualizar estado de enlaces de socios (robot semanal)"
+            git push
+          fi
+
+      - name: Open issue if problems found
+        if: steps.check.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          existing=$(gh issue list --state open --search "Link problem in:title" --json number -q '.[0].number')
+          if [ -z "$existing" ]; then
+            gh issue create --title "Link problem" --body "El chequeo semanal de enlaces encontro problemas. Revisa el detalle aqui: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          fi
+
+      - name: Close issue if all good
+        if: steps.check.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          existing=$(gh issue list --state open --search "Link problem in:title" --json number -q '.[0].number')
+          if [ -n "$existing" ]; then
+            gh issue close "$existing" --comment "Todos los enlaces de socios funcionan bien de nuevo."
+          fi
