@@ -41,7 +41,7 @@
       "respaldo": null,
       "pagina_oficial": "https://www.hotels.com/",
       "active": "principal",
-      "consecutive_failures": 0
+      "consecutive_failures": 1
     },
     "intuitravel": {
       "name": "intui.travel",
