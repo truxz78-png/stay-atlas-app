@@ -10,6 +10,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.browser.customtabs.CustomTabsIntent;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
             if (SITE_HOST.equals(uri.getHost())) {
                 return false; // nuestro sitio: se queda dentro de la app
             }
-            openExternal(new Intent(Intent.ACTION_VIEW, uri));
+				openPartner(uri);
             return true;
         }
 
@@ -91,6 +92,17 @@ public class MainActivity extends AppCompatActivity {
             return true;
         } catch (ActivityNotFoundException e) {
             return false;
+        }
+    }
+
+    private void openPartner(Uri uri) {
+        try {
+            CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder()
+                    .setShowTitle(true)
+                    .build();
+            customTabsIntent.launchUrl(this, uri);
+        } catch (Exception e) {
+            openExternal(new Intent(Intent.ACTION_VIEW, uri));
         }
     }
 }
