@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta name="google" content="notranslate">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Privacy Policy - Stay Atlas</title>
@@ -65,5 +66,66 @@
 <p>If you have any questions about this Privacy Policy, please contact us at:</p>
 <p><a href="mailto:soporte.stayatlas@gmail.com">soporte.stayatlas@gmail.com</a></p>
 
+
+<p style="font-size:12px;color:#888;margin-top:40px;">This page may be translated automatically into your language. The English version is the official one.</p>
+
+<script type="text/javascript">
+(function() {
+  var SKIP_WORDS = ['stay atlas', 'booking.com', 'agoda', 'expedia', 'hotels.com', 'vrbo', 'trip.com', 'kayak', 'intui.travel', 'getyourguide', 'safetywing'];
+  function isSkippable(text) {
+    var clean = text.trim().toLowerCase();
+    return SKIP_WORDS.indexOf(clean) !== -1;
+  }
+  function fixCase(original, translated) {
+    if (!translated) return translated;
+    var firstChar = original.trim().charAt(0);
+    if (firstChar && firstChar === firstChar.toUpperCase() && firstChar !== firstChar.toLowerCase()) {
+      return translated.charAt(0).toUpperCase() + translated.slice(1);
+    }
+    return translated;
+  }
+  function getBrowserLang() {
+    var lang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+    return lang.split('-')[0];
+  }
+  function getTextNodes(root) {
+    var nodes = [];
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode: function(node) {
+        if (!node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+        var tag = node.parentNode.nodeName;
+        if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'NOSCRIPT') return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    var n;
+    while (n = walker.nextNode()) nodes.push(n);
+    return nodes;
+  }
+  function translateText(text, lang) {
+    var url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=' + lang + '&dt=t&q=' + encodeURIComponent(text);
+    return fetch(url).then(function(r){ return r.json(); }).then(function(data){
+      return data[0].map(function(seg){ return seg[0]; }).join('');
+    });
+  }
+  function translatePage(lang) {
+    if (lang === 'en') return;
+    var nodes = getTextNodes(document.body);
+    nodes.forEach(function(node) {
+      var original = node.nodeValue;
+      if (isSkippable(original)) return;
+      translateText(original, lang).then(function(translated) {
+        if (translated) node.nodeValue = fixCase(original, translated);
+      }).catch(function(){});
+    });
+  }
+  window.addEventListener('load', function() {
+    var saved = null;
+    try { saved = localStorage.getItem('stayatlas_lang'); } catch(e) {}
+    var lang = saved || getBrowserLang();
+    setTimeout(function(){ translatePage(lang); }, 300);
+  });
+})();
+</script>
 </body>
 </html>
