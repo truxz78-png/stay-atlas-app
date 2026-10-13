@@ -1,0 +1,41 @@
+name: Check Translation
+
+on:
+  schedule:
+    - cron: '23 13 * * *'
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run translation check
+        id: check
+        run: python3 tools/check_translation.py
+        continue-on-error: true
+
+      - name: Open issue if failed
+        if: steps.check.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          existing=$(gh issue list --state open --search "Translation problem in:title" --json number -q '.[0].number')
+          if [ -z "$existing" ]; then
+            gh issue create --title "Translation problem" --body "El chequeo diario de traduccion fallo. Revisa el detalle aqui: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          fi
+
+      - name: Close issue if fixed
+        if: steps.check.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          existing=$(gh issue list --state open --search "Translation problem in:title" --json number -q '.[0].number')
+          if [ -n "$existing" ]; then
+            gh issue close "$existing" --comment "La traduccion volvio a funcionar correctamente."
+          fi
+
+      - name: Fail job if check failed
+        if: steps.check.outcome == 'failure'
+        run: exit 1
