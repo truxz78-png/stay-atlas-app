@@ -24,6 +24,7 @@ HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; StayAtlasPageBot/1.0)"}
 REPORT = "page_report.md"
 TIME_BUDGET = 600
 CHUNK_LIMIT = 700
+LAST_ERROR = ""
 
 
 def fetch(url, timeout=30):
@@ -40,7 +41,9 @@ def translate(text, source, target):
             _, body = fetch(url, timeout=15)
             data = json.loads(body)
             return "".join(part[0] for part in data[0] if part and part[0])
-        except Exception:
+        except Exception as exc:
+            global LAST_ERROR
+            LAST_ERROR = str(exc)[:200]
             time.sleep(2 * (attempt + 1))
     return None
 
@@ -133,6 +136,8 @@ def main():
     lines.append("- Languages this week: " + ", ".join(LANGS))
     lines.append("- Paragraph checks completed: " + str(checked))
     lines.append("- Could not test (translation service busy or time limit): " + str(untested))
+    if LAST_ERROR:
+        lines.append("- Last translation error: " + LAST_ERROR)
     if checked == 0 and untested > 0:
         problems.append("Legal translation check could not run: the translation service did not answer.")
 
