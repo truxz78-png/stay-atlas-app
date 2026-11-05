@@ -22,24 +22,26 @@ LANGS = CORE + OTHERS[GROUP * 6:(GROUP + 1) * 6]
 NEG = re.compile(r"\b(?:not|no|never|nothing|none|neither|nor|without|cannot)\b|n't", re.I)
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; StayAtlasPageBot/1.0)"}
 REPORT = "page_report.md"
+TIME_BUDGET = 600
+CHUNK_LIMIT = 700
 
 
-def fetch(url):
+def fetch(url, timeout=30):
     req = urllib.request.Request(url, headers=HEADERS)
-    with urllib.request.urlopen(req, timeout=30) as resp:
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
         return resp.status, resp.read().decode("utf-8", "replace")
 
 
 def translate(text, source, target):
     url = ("https://translate.googleapis.com/translate_a/single?client=gtx&sl="
            + source + "&tl=" + target + "&dt=t&q=" + urllib.parse.quote(text))
-    for attempt in range(3):
+    for attempt in range(2):
         try:
-            _, body = fetch(url)
+            _, body = fetch(url, timeout=15)
             data = json.loads(body)
             return "".join(part[0] for part in data[0] if part and part[0])
         except Exception:
-            time.sleep(3 * (attempt + 1))
+            time.sleep(2 * (attempt + 1))
     return None
 
 
@@ -57,6 +59,19 @@ def legal_paragraphs(html):
         if text:
             texts.append(text)
     return texts
+
+
+def make_chunks(texts):
+    chunks, current, size = [], [], 0
+    for text in texts:
+        if current and size + len(text) > CHUNK_LIMIT:
+            chunks.append(current)
+            current, size = [], 0
+        current.append(text)
+        size += len(text)
+    if current:
+        chunks.append(current)
+    return chunks
 
 
 def main():
@@ -79,29 +94,47 @@ def main():
         lines.append("- " + page + ": " + ("OK" if status == 200 and not missing else "PROBLEM"))
 
     lines += ["", "## Legal translation check"]
-    checked = 0
-    untested = 0
+    page_chunks = {}
     for page in LEGAL_PAGES:
         html = pages_html.get(page)
-        if not html:
-            continue
-        sentences = [t for t in legal_paragraphs(html) if NEG.search(t)]
-        for lang in LANGS:
-            for text in sentences:
-                original = len(NEG.findall(text))
-                translated = translate(text, "en", lang)
-                time.sleep(0.3)
-                back = translate(translated, lang, "en") if translated else None
-                time.sleep(0.3)
-                if back is None:
-                    untested += 1
+        if html:
+            page_chunks[page] = make_chunks([t for t in legal_paragraphs(html) if NEG.search(t)])
+    checked = 0
+    untested = 0
+    failures_in_a_row = 0
+    deadline = time.time() + TIME_BUDGET
+    for lang in LANGS:
+        for page, chunks in page_chunks.items():
+            for chunk in chunks:
+                if time.time() > deadline:
+                    untested += len(chunk)
                     continue
-                checked += 1
-                if len(NEG.findall(back)) < original:
-                    problems.append(page + " [" + lang + "] a negation may be lost in translation."
-                                    + "\n  - English: " + text + "\n  - Back-translated: " + back)
-    lines.append("- Paragraph checks completed: " + str(checked) + " (" + str(len(LANGS)) + " languages: " + ", ".join(LANGS) + ")")
-    lines.append("- Could not test (translation service busy): " + str(untested))
+                translated = translate("\n".join(chunk), "en", lang)
+                time.sleep(0.5)
+                back = translate(translated, lang, "en") if translated else None
+                time.sleep(0.5)
+                if back is None:
+                    untested += len(chunk)
+                    failures_in_a_row += 1
+                    if failures_in_a_row >= 3:
+                        deadline = 0
+                    continue
+                failures_in_a_row = 0
+                back_lines = [line.strip() for line in back.split("\n") if line.strip()]
+                if len(back_lines) == len(chunk):
+                    pairs = list(zip(chunk, back_lines))
+                else:
+                    pairs = [(" ".join(chunk), back)]
+                for text, back_text in pairs:
+                    if len(NEG.findall(back_text)) < len(NEG.findall(text)):
+                        problems.append(page + " [" + lang + "] a negation may be lost in translation."
+                                        + "\n  - English: " + text + "\n  - Back-translated: " + back_text)
+                checked += len(chunk)
+    lines.append("- Languages this week: " + ", ".join(LANGS))
+    lines.append("- Paragraph checks completed: " + str(checked))
+    lines.append("- Could not test (translation service busy or time limit): " + str(untested))
+    if checked == 0 and untested > 0:
+        problems.append("Legal translation check could not run: the translation service did not answer.")
 
     today = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
     body = ["# Stay Atlas weekly page check - " + today, ""]
