@@ -1,0 +1,48 @@
+name: Check Pages
+on:
+  schedule:
+    - cron: '0 15 * * 1'
+  workflow_dispatch:
+permissions:
+  contents: read
+  issues: write
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run page check
+        id: check
+        run: python3 tools/check_pages.py
+        continue-on-error: true
+      - name: Send weekly report
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          url=$(gh issue create --title "Weekly status report $(date -u +%Y-%m-%d)" --body-file page_report.md)
+          gh issue close "$url"
+      - name: Open or update problem alert
+        if: steps.check.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          num=$(gh issue list --state open --json number,title --jq '.[] | select(.title == "Page problem") | .number' | head -n 1)
+          if [ -n "$num" ]; then
+            gh issue comment "$num" --body-file page_report.md
+          else
+            gh issue create --title "Page problem" --body-file page_report.md
+          fi
+      - name: Close problem alert if all good
+        if: steps.check.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          num=$(gh issue list --state open --json number,title --jq '.[] | select(.title == "Page problem") | .number' | head -n 1)
+          if [ -n "$num" ]; then
+            gh issue comment "$num" --body "All checks passed again. Closing this alert."
+            gh issue close "$num"
+          fi
+      - name: Mark run as failed if problems were found
+        if: steps.check.outcome == 'failure'
+        run: exit 1
