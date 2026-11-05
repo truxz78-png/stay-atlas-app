@@ -524,7 +524,7 @@
 </script>
 <script type="text/javascript">
 (function() {
-  var SKIP_WORDS = ['stay atlas', 'booking.com', 'agoda', 'expedia', 'hotels.com', 'vrbo', 'trip.com', 'kayak', 'intui.travel', 'getyourguide', 'safetywing'];
+  var SKIP_WORDS = ['stay atlas', 'booking.com', 'agoda', 'expedia', 'hotels.com', 'vrbo', 'trip.com', 'kayak', 'intui.travel', 'getyourguide', 'safetywing', 'kiwitaxi', 'wegotrip'];
   function isSkippable(text) {
     var clean = text.trim().toLowerCase();
     return SKIP_WORDS.indexOf(clean) !== -1;
@@ -596,6 +596,45 @@
       });
     })
     .catch(function() {});
+})();
+</script>
+<!-- region mode: partners for Russia/Belarus -->
+<script type="text/javascript">
+(function() {
+  var RESTRICTED_ZONES = ['Europe/Moscow', 'Europe/Kaliningrad', 'Europe/Samara', 'Europe/Volgograd', 'Europe/Saratov', 'Europe/Ulyanovsk', 'Europe/Astrakhan', 'Europe/Kirov', 'Europe/Simferopol', 'Europe/Minsk', 'Asia/Yekaterinburg', 'Asia/Omsk', 'Asia/Novosibirsk', 'Asia/Barnaul', 'Asia/Tomsk', 'Asia/Novokuznetsk', 'Asia/Krasnoyarsk', 'Asia/Irkutsk', 'Asia/Chita', 'Asia/Yakutsk', 'Asia/Khandyga', 'Asia/Vladivostok', 'Asia/Ust-Nera', 'Asia/Magadan', 'Asia/Sakhalin', 'Asia/Srednekolymsk', 'Asia/Kamchatka', 'Asia/Anadyr'];
+  var forced = null;
+  try { forced = new URLSearchParams(window.location.search).get('region'); } catch (e) {}
+  var tz = '';
+  try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
+  var active = forced === 'ru' || (forced !== 'all' && RESTRICTED_ZONES.indexOf(tz) !== -1);
+  if (!active) return;
+  function card(id) {
+    var link = document.querySelector('[data-link-id="' + id + '"]');
+    return link ? link.closest('.platform-card') : null;
+  }
+  function addCard(afterId, data) {
+    var base = card('intuitravel');
+    var after = card(afterId);
+    if (!base || !after) return;
+    var c = base.cloneNode(true);
+    c.querySelector('.name').textContent = data.name;
+    c.querySelector('.desc').textContent = data.desc;
+    var a = c.querySelector('a.go');
+    a.setAttribute('href', data.href);
+    a.setAttribute('data-link-id', data.id);
+    a.textContent = data.label;
+    after.parentNode.insertBefore(c, after.nextSibling);
+  }
+  addCard('intuitravel', { id: 'kiwitaxi', name: 'Kiwitaxi', desc: 'Pre-booked airport and city transfers in many countries, with a fixed price agreed in advance.', href: 'https://kiwitaxi.tpx.lu/JEQ33xEW', label: 'Book a transfer on Kiwitaxi \u2197' });
+  addCard('getyourguide', { id: 'wegotrip', name: 'WeGoTrip', desc: 'Audio tours and excursions in cities around the world, to explore at your own pace.', href: 'https://wegotrip.tpx.lu/pARJRvWI', label: 'Book on WeGoTrip \u2197' });
+  ['booking', 'agoda', 'expedia', 'hotelscom', 'vrbo', 'kayak', 'getyourguide', 'safetywing'].forEach(function(id) {
+    var c = card(id);
+    if (c) c.style.display = 'none';
+  });
+  var ins = document.getElementById('insurance');
+  if (ins) ins.style.display = 'none';
+  var nav = document.querySelector('a[href="#insurance"]');
+  if (nav) nav.style.display = 'none';
 })();
 </script>
 </body>

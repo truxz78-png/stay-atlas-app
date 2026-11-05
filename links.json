@@ -98,6 +98,22 @@
       "pagina_oficial": "https://www.trip.com/",
       "active": "principal",
       "consecutive_failures": 0
+    },
+    "kiwitaxi": {
+      "name": "Kiwitaxi",
+      "principal": "https://kiwitaxi.tpx.lu/JEQ33xEW",
+      "respaldo": null,
+      "pagina_oficial": "https://kiwitaxi.com",
+      "active": "principal",
+      "consecutive_failures": 0
+    },
+    "wegotrip": {
+      "name": "WeGoTrip",
+      "principal": "https://wegotrip.tpx.lu/pARJRvWI",
+      "respaldo": null,
+      "pagina_oficial": "https://wegotrip.com",
+      "active": "principal",
+      "consecutive_failures": 0
     }
   }
 }
