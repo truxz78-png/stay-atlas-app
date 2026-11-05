@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="google" content="notranslate">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms of Service - Stay Atlas</title>
+<link rel="canonical" href="https://truxz78-png.github.io/stay-atlas-app/terms.html">
+<style>
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 24px;
+    line-height: 1.6;
+    color: #1d1d1f;
+    background-color: #ffffff;
+  }
+  h1 {
+    color: #1d3a5c;
+  }
+  h2 {
+    color: #1d3a5c;
+    margin-top: 32px;
+  }
+  a {
+    color: #b8860b;
+  }
+  .updated {
+    color: #666;
+    font-size: 0.9em;
+    margin-bottom: 24px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Terms of Service for Stay Atlas</h1>
+<p class="updated">Last updated: November 5, 2026</p>
+
+<p>These Terms of Service ("Terms") govern your use of Stay Atlas ("the App", "we", "us", or "our"), an affiliate travel discovery application operated by DriftforgeDev. By using the App you agree to these Terms. If you do not agree, please do not use the App.</p>
+
+<h2>1. What Stay Atlas Is</h2>
+<p>Stay Atlas helps you find and compare hotels, vacation rentals, tours, and travel services by linking to third-party booking platforms. Stay Atlas is not a travel agency, tour operator, or booking provider. We do not sell accommodation, process payments, or take reservations.</p>
+
+<h2>2. Third-Party Platforms</h2>
+<p>When you tap a booking button, you leave the App and go to a third-party website or app, such as Booking.com, Agoda, Expedia, Hotels.com, Vrbo, Trip.com, intui.travel, Kayak, GetYourGuide, or SafetyWing. Any booking, purchase, payment, cancellation, or refund is a contract between you and that provider and is governed by its own terms and privacy policy. Prices, availability, and conditions are set by each provider and may change at any time. We are not responsible for the content, services, or actions of third parties.</p>
+
+<h2>3. Affiliate Disclosure</h2>
+<p>Stay Atlas may earn a commission when you make a booking or purchase through links in the App, at no extra cost to you. We do not set or change the prices shown by providers.</p>
+
+<h2>4. Information in the App</h2>
+<p>Destination guides and other content are provided for general information only. They may be incomplete or out of date. Please verify important details, such as entry requirements, safety conditions, embassy contacts, and travel insurance coverage, with official sources and the relevant provider before you travel. Nothing in the App is legal, medical, insurance, or financial advice.</p>
+
+<h2>5. Acceptable Use</h2>
+<p>You agree to use the App only for lawful purposes. You must not misuse the App, attempt to disrupt or gain unauthorized access to it, or copy, scrape, or reproduce its content for commercial purposes without our permission.</p>
+
+<h2>6. Intellectual Property</h2>
+<p>The Stay Atlas name, logo, design, and original content belong to us. Names, logos, and trademarks of third-party providers belong to their respective owners, and their appearance in the App does not imply endorsement or affiliation beyond our affiliate relationship.</p>
+
+<h2>7. Automatic Translation</h2>
+<p>The App may translate its text automatically into your language. Automatic translations may contain errors. The English version is the official one.</p>
+
+<h2>8. Disclaimer of Warranties</h2>
+<p>The App is provided "as is" and "as available", without warranties of any kind, express or implied. We do not guarantee that the App will be uninterrupted or error-free, or that links will always work or lead to the offer you expect.</p>
+
+<h2>9. Limitation of Liability</h2>
+<p>To the maximum extent permitted by law, we are not liable for any loss or damage arising from your use of the App or from any booking or transaction you make with a third-party provider, including cancelled or changed bookings, price differences, or poor service. Nothing in these Terms limits any rights you have under mandatory consumer protection laws.</p>
+
+<h2>10. Changes to the App and These Terms</h2>
+<p>We may change or discontinue parts of the App, and we may update these Terms from time to time. Updated Terms will be posted on this page with a new revision date. Continued use of the App after a change means you accept the updated Terms.</p>
+
+<h2>11. Governing Law</h2>
+<p>These Terms are governed by the laws of the Dominican Republic, without prejudice to any mandatory consumer rights you may have in your country of residence.</p>
+
+<h2>12. Contact Us</h2>
+<p>If you have any questions about these Terms, please contact us at:</p>
+<p><a href="mailto:soporte.stayatlas@gmail.com">soporte.stayatlas@gmail.com</a></p>
+<p><a href="privacy.html">Privacy Policy</a></p>
+
+
+
+<p style="font-size:12px;color:#888;margin-top:40px;">This page may be translated automatically into your language. The English version is the official one.</p>
+
+<script type="text/javascript">
+(function() {
+  var SKIP_WORDS = ['stay atlas', 'booking.com', 'agoda', 'expedia', 'hotels.com', 'vrbo', 'trip.com', 'kayak', 'intui.travel', 'getyourguide', 'safetywing'];
+  function isSkippable(text) {
+    var clean = text.trim().toLowerCase();
+    return SKIP_WORDS.indexOf(clean) !== -1;
+  }
+  function fixCase(original, translated) {
+    if (!translated) return translated;
+    var firstChar = original.trim().charAt(0);
+    if (firstChar && firstChar === firstChar.toUpperCase() && firstChar !== firstChar.toLowerCase()) {
+      return translated.charAt(0).toUpperCase() + translated.slice(1);
+    }
+    return translated;
+  }
+  function getBrowserLang() {
+    var lang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+    return lang.split('-')[0];
+  }
+  function getTextNodes(root) {
+    var nodes = [];
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode: function(node) {
+        if (!node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+        var tag = node.parentNode.nodeName;
+        if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'NOSCRIPT') return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    var n;
+    while (n = walker.nextNode()) nodes.push(n);
+    return nodes;
+  }
+  function translateText(text, lang) {
+    var url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=' + lang + '&dt=t&q=' + encodeURIComponent(text);
+    return fetch(url).then(function(r){ return r.json(); }).then(function(data){
+      return data[0].map(function(seg){ return seg[0]; }).join('');
+    });
+  }
+  function translatePage(lang) {
+    if (lang === 'en') return;
+    var nodes = getTextNodes(document.body);
+    nodes.forEach(function(node) {
+      var original = node.nodeValue;
+      if (isSkippable(original)) return;
+      translateText(original, lang).then(function(translated) {
+        if (translated) node.nodeValue = fixCase(original, translated);
+      }).catch(function(){});
+    });
+  }
+  window.addEventListener('load', function() {
+    var saved = null;
+    try { saved = localStorage.getItem('stayatlas_lang'); } catch(e) {}
+    var lang = saved || getBrowserLang();
+    setTimeout(function(){ translatePage(lang); }, 300);
+  });
+})();
+</script>
+</body>
+</html>
