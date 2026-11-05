@@ -19,6 +19,8 @@ CORE = ["es", "pt", "fr", "zh-CN", "ar", "hi"]
 OTHERS = ["de", "it", "ru", "ja", "ko", "tr", "nl", "pl", "uk", "ro", "el", "cs", "hu", "sv", "da", "fi", "no", "iw", "fa", "ur", "bn", "ta", "te", "mr", "gu", "id", "ms", "vi", "th", "tl", "sw", "am", "zu", "af", "ha", "yo", "ig", "sq", "sr", "hr", "bg", "sk"]
 GROUP = datetime.date.today().isocalendar()[1] % 7
 LANGS = CORE + OTHERS[GROUP * 6:(GROUP + 1) * 6]
+if "--legal" not in sys.argv:
+    LANGS = []
 NEG = re.compile(r"\b(?:not|no|never|nothing|none|neither|nor|without|cannot)\b|n't", re.I)
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; StayAtlasPageBot/1.0)"}
 REPORT = "page_report.md"
@@ -133,7 +135,7 @@ def main():
                         problems.append(page + " [" + lang + "] a negation may be lost in translation."
                                         + "\n  - English: " + text + "\n  - Back-translated: " + back_text)
                 checked += len(chunk)
-    lines.append("- Languages this week: " + ", ".join(LANGS))
+    lines.append("- Languages this week: " + (", ".join(LANGS) if LANGS else "not run here (run it from Termux with --legal after changing legal text)"))
     lines.append("- Paragraph checks completed: " + str(checked))
     lines.append("- Could not test (translation service busy or time limit): " + str(untested))
     if LAST_ERROR:
