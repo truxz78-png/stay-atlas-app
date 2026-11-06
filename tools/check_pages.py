@@ -8,10 +8,10 @@ import urllib.request
 
 BASE = "https://truxz78-png.github.io/stay-atlas-app/"
 PAGES = {
-    "index.html": ['href="privacy.html"', 'href="terms.html"', "mailto:soporte.stayatlas@gmail.com"],
+    "index.html": ['href="privacy.html"', 'href="terms.html"', "mailto:soporte.stayatlas@gmail.com", "translate_a/single", 'content="notranslate"'],
     "app.html": ['href="privacy.html"', 'href="terms.html"'],
-    "privacy.html": ['href="terms.html"', "The English version is the official one"],
-    "terms.html": ['href="privacy.html"', "The English version is the official one"],
+    "privacy.html": ['href="terms.html"', "The English version is the official one", "translate_a/single", 'content="notranslate"'],
+    "terms.html": ['href="privacy.html"', "The English version is the official one", "translate_a/single", 'content="notranslate"'],
     "sitemap.xml": ["app.html", "privacy.html", "terms.html"],
 }
 LEGAL_PAGES = ["privacy.html", "terms.html"]
