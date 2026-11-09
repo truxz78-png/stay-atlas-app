@@ -1,28 +1,39 @@
 import json
+import socket
 import sys
-import urllib.request
 import urllib.error
+import urllib.request
 
 LINKS_FILE = "links.json"
-HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; StayAtlasLinkBot/1.0)"}
+HEADERS = {"User-Agent": "Mozilla/5.0"}
+BROKEN_CODES = (404, 410)
 
 
 def check_url(url):
-    """Devuelve ('ok', None), ('bloqueado', motivo) o ('fallo', motivo)."""
-    req = urllib.request.Request(url, headers=HEADERS, method="HEAD")
-    try:
-        with urllib.request.urlopen(req, timeout=20) as resp:
-            if resp.status < 400:
-                return "ok", None
-            return "fallo", "status " + str(resp.status)
-    except urllib.error.HTTPError as e:
-        if e.code == 403 or e.code == 999:
-            return "bloqueado", "status " + str(e.code)
-        if e.code < 500 and e.code != 404:
-            return "ok", None
-        return "fallo", "status " + str(e.code)
-    except Exception as e:
-        return "fallo", str(e)
+    """Devuelve ('ok', motivo), ('dudoso', motivo) o ('roto', motivo).
+    Solo 'roto' cuenta como fallo: 404, 410 o el sitio no existe."""
+    for method in ("HEAD", "GET"):
+        req = urllib.request.Request(url, headers=HEADERS, method=method)
+        try:
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                return "ok", "status " + str(resp.status)
+        except urllib.error.HTTPError as e:
+            if e.code in BROKEN_CODES:
+                return "roto", "status " + str(e.code)
+            if e.code == 405 and method == "HEAD":
+                continue
+            if e.code < 400:
+                return "ok", "status " + str(e.code)
+            if e.code in (403, 429, 999) or e.code >= 500:
+                return "dudoso", "status " + str(e.code) + " (antibot, freno o servidor ocupado)"
+            return "ok", "status " + str(e.code)
+        except urllib.error.URLError as e:
+            if isinstance(e.reason, socket.gaierror):
+                return "roto", "el sitio no existe (" + str(e.reason) + ")"
+            return "dudoso", "sin respuesta (" + str(e.reason) + ")"
+        except Exception as e:
+            return "dudoso", "sitio lento o sin respuesta (" + str(e) + ")"
+    return "dudoso", "no respondio a HEAD ni a GET"
 
 
 def main():
@@ -30,55 +41,58 @@ def main():
         data = json.load(f)
 
     auto_switch = data.get("settings", {}).get("auto_switch", False)
-    report_lines = []
+    broken, doubtful, notes = [], [], []
     changed = False
 
     for key, link in data["links"].items():
-        status, reason = check_url(link["principal"])
-
-        if status == "bloqueado":
-            report_lines.append(f"- {link['name']}: el sitio bloquea revisiones automaticas ({reason}), se ignora.")
+        name = link["name"]
+        if link.get("solo_pais"):
+            notes.append(f"- {name}: solo funciona en {link['solo_pais']}; no se puede probar desde EE. UU. y nunca se cambia solo.")
             continue
+
+        status, reason = check_url(link["principal"])
 
         if status == "ok":
             if link.get("consecutive_failures", 0) != 0:
                 link["consecutive_failures"] = 0
                 changed = True
-            if link.get("active") == "respaldo":
-                if auto_switch:
-                    link["active"] = "principal"
-                    changed = True
-                    report_lines.append(f"- {link['name']}: el enlace principal se recupero, vuelve a quedar activo.")
-                else:
-                    report_lines.append(f"- {link['name']}: el enlace principal ya funciona de nuevo (modo solo reportar, no se cambio).")
+            if link.get("active") != "principal":
+                notes.append(f"- {name}: el enlace principal funciona; esta activo '{link.get('active')}'. Revisar a mano.")
             continue
 
-        # status == "fallo"
+        if status == "dudoso":
+            doubtful.append(f"- {name}: DUDOSO, {reason}. No se cambia nada.")
+            continue
+
         link["consecutive_failures"] = link.get("consecutive_failures", 0) + 1
         changed = True
-        report_lines.append(f"- {link['name']}: fallo #{link['consecutive_failures']} ({reason}).")
-
+        broken.append(f"- {name}: ROTO #{link['consecutive_failures']} ({reason}).")
         if link["consecutive_failures"] >= 2:
-            if link.get("respaldo"):
-                if auto_switch and link.get("active") != "respaldo":
-                    link["active"] = "respaldo"
-                    report_lines.append(f"  -> Cambiado al enlace de respaldo de {link['name']}.")
-                elif not auto_switch:
-                    report_lines.append(f"  -> (modo solo reportar) se cambiaria al respaldo de {link['name']}.")
-            else:
-                report_lines.append(f"  -> {link['name']} no tiene enlace de respaldo configurado.")
+            if not link.get("respaldo"):
+                broken.append(f"  -> {name} no tiene enlace de respaldo configurado.")
+            elif auto_switch and link.get("active") == "principal":
+                link["active"] = "respaldo"
+                broken.append(f"  -> Cambiado al enlace de respaldo de {name}.")
+            elif not auto_switch:
+                broken.append(f"  -> (modo solo reportar) se cambiaria al respaldo de {name}.")
 
     if changed:
         with open(LINKS_FILE, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
             f.write("\n")
 
-    if report_lines:
-        print("PROBLEMAS ENCONTRADOS:")
-        print("\n".join(report_lines))
-        sys.exit(1)
-    else:
-        print("Todos los enlaces de socios estan funcionando bien.")
+    if broken:
+        print("ENLACES ROTOS DE VERDAD (404, 410 o sitio inexistente):")
+        print("\n".join(broken))
+    if doubtful:
+        print("DUDOSOS (lentos, antibots o frenos; se vuelven a probar la proxima semana):")
+        print("\n".join(doubtful))
+    if notes:
+        print("NOTAS:")
+        print("\n".join(notes))
+    if not broken:
+        print("Ningun enlace roto de verdad.")
+    sys.exit(1 if broken else 0)
 
 
 if __name__ == "__main__":
